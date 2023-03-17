@@ -4,31 +4,33 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 #include "builder.c"
 
+#define INIT_RED "\033[0;31m"
+#define INIT_GREEN "\033[0;32m"
+#define END_COLOR "\033[0m"
 
 void print_usage(char *argv[]){
-	fprintf(stderr, "USAGE: %s <new> <proj-name>\n", argv[0]);
+	(void) fprintf(stderr, "%sUSAGE:%s %s <new> <proj-name>\n", INIT_RED, END_COLOR, argv[0]);
 	exit(EXIT_FAILURE);
 }
 
 void print_help(void){
 	/* The help message itself isn't contained here
 	 * you can find it in the HELP.txt file in the main folder */
-	FILE *finfo;
-	char c;
+	FILE *finfo = NULL;
+	int read_c;
 
-	if ((finfo = fopen("../HELP.txt", "r")) == NULL){
-		fprintf(stderr, "ERROR: Failed to open HELP file");
+	if ((finfo = fopen("../statics/HELP.txt", "re")) == NULL){
+		fprintf(stderr, "%sERROR:%s Failed to open HELP file", INIT_RED, END_COLOR);
 		exit(EXIT_FAILURE);
 	}
 
-	while ((c = fgetc(finfo)) != EOF){
-		printf("%c", c);
+	while ((read_c = fgetc(finfo)) != EOF){
+		printf("%c", read_c);
 	}
 
-	fclose(finfo);
+	(void) fclose(finfo);
 
 	exit(EXIT_SUCCESS);
 }
@@ -49,9 +51,8 @@ int main(int argc, char *argv[])
 			print_help();
 			exit(EXIT_SUCCESS);
 		}
-
 		/* Prints usage message in any of these cases */
-		else print_usage(&argv[0]);
+		else{ print_usage(&argv[0]); }
 	}
 
 	if (argc == 3){
