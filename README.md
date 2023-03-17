@@ -17,4 +17,4 @@ cForge is a lightweight library for building scalable and efficient C applicatio
 
 ## Roadmap
 
-The project still in early-development stage so the roadmap couldn't be well define till now. 
+The project still in early-development stage so the roadmap couldn't be well defined till now. 
