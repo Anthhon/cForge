@@ -1,0 +1,11 @@
+Usage: cforge [OPTIONS] [ARGUMENTS]
+
+Description:
+cargoc is a package manager and build tool for C applications, designed to simplify dependency management, build automation, and package publishing.
+
+Options:
+    -h, --help              Show this help message and exit.
+
+    <init> <proj-name>	    Starts a new boilerplate project in C
+    <build>		    Build the entire project
+    <run>		    Run main project file
