@@ -4,16 +4,20 @@ cForge is a lightweight library for building scalable and efficient C applicatio
 
 ## Building
 
-  git clone https://github.com/Anthhon/cForge.git
-  or
-  git clone git@github.com:Anthhon/cForge.git
-  mkdir build
-  cd build
-  cmake ..
+```c
+git clone https://github.com/Anthhon/cForge.git
+or
+git clone git@github.com:Anthhon/cForge.git
+mkdir build
+cd build
+cmake ..
+```
 
 ## Usage
 
-  cforge help
+```c
+cforge help
+```
 
 ## Roadmap
 
