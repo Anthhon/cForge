@@ -3,9 +3,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include "builder.c"
 
+/* TODO: header file not working
+ * #define "console_colors.h" */
 #define INIT_RED "\033[0;31m"
 #define INIT_GREEN "\033[0;32m"
 #define END_COLOR "\033[0m"
@@ -19,10 +20,10 @@ void print_help(void){
 	/* The help message itself isn't contained here
 	 * you can find it in the HELP.txt file in the main folder */
 	FILE *finfo = NULL;
-	int read_c;
+	int read_c = 0;
 
 	if ((finfo = fopen("../statics/HELP.txt", "re")) == NULL){
-		fprintf(stderr, "%sERROR:%s Failed to open HELP file", INIT_RED, END_COLOR);
+		(void) fprintf(stderr, "%sERROR:%s Failed to open HELP file", INIT_RED, END_COLOR);
 		exit(EXIT_FAILURE);
 	}
 
