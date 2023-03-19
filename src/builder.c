@@ -25,10 +25,10 @@ typedef enum FileType {
 
 void file_make(File file_type, const char *DESTINATION_PATH){
 	static const char *STATICS_PATH = "../static";
-	static const char *TESTS_PATH = "tests/";
-	static const char *SRC_PATH = "src/";
+	static const char *TESTS_PATH = "tests";
+	static const char *SRC_PATH = "src";
 	const char *FILE_CMAKE_NAME = "CMakeLists.txt";
-	const char *FILE_README_NAME = "README";
+	const char *FILE_README_NAME = "README.md";
 	const char *FILE_MAIN_NAME = "main.c";
 	const char *FILE_TESTS_NAME = "tests.c";
 
@@ -47,12 +47,15 @@ void file_make(File file_type, const char *DESTINATION_PATH){
 			break;
 		case FILE_README:
 			(void)sprintf(source_file_path, "%s/%s", STATICS_PATH, FILE_README_NAME);
+			(void)sprintf(destination_file_path, "./%s/%s", DESTINATION_PATH, FILE_README_NAME);
 			break;
 		case FILE_MAIN:
 			(void)sprintf(source_file_path, "%s/%s", STATICS_PATH, FILE_MAIN_NAME);
+			(void)sprintf(destination_file_path, "./%s/%s/%s", DESTINATION_PATH, SRC_PATH, FILE_MAIN_NAME);
 			break;
 		case FILE_TESTS:
 			(void)sprintf(source_file_path, "%s/%s", STATICS_PATH, FILE_TESTS_NAME);
+			(void)sprintf(destination_file_path, "./%s/%s/%s", DESTINATION_PATH, SRC_PATH, FILE_TESTS_NAME);
 			break;
 		default:
 			(void)fprintf(stderr, "%sERROR:%s Failed to build path to pointed file\n", INIT_RED, END_COLOR);
@@ -77,7 +80,9 @@ void file_make(File file_type, const char *DESTINATION_PATH){
 	while ((read_size = fread(text_buffer, 1, sizeof(text_buffer), source_file)) > 0){
 		(void)fwrite(text_buffer, 1, read_size, destination_file);
 	}
-	(void)fprintf(stderr, "%scforge:%s %s file created succesfully\n", INIT_GREEN, END_COLOR, destination_file_path);
+
+	/* Just a success message */
+	(void)fprintf(stderr, "%scforge:%s %s file created succesffully\n", INIT_GREEN, END_COLOR, destination_file_path);
 
 	/* Close source and destination files */
 	fclose(source_file);
@@ -118,6 +123,9 @@ int proj_init(char *path_main[]){
 	folder_make(path_build);
 
 	file_make(FILE_CMAKE, *path_main);
+	file_make(FILE_README, *path_main);
+	file_make(FILE_MAIN, *path_main);
+	file_make(FILE_TESTS, *path_main);
 	
 	free(path_src);
 	path_src = NULL;

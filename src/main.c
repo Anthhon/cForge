@@ -12,7 +12,7 @@
 #define END_COLOR "\033[0m"
 
 void print_usage(char *argv[]){
-	(void) fprintf(stderr, "%sUSAGE:%s %s <new> <proj-name>\n", INIT_RED, END_COLOR, argv[0]);
+	(void)fprintf(stderr, "%sUSAGE:%s %s <new> <proj-name>\n", INIT_RED, END_COLOR, argv[0]);
 	exit(EXIT_FAILURE);
 }
 
@@ -22,8 +22,8 @@ void print_help(void){
 	FILE *finfo = NULL;
 	int read_c = 0;
 
-	if ((finfo = fopen("../statics/HELP.txt", "re")) == NULL){
-		(void) fprintf(stderr, "%sERROR:%s Failed to open HELP file", INIT_RED, END_COLOR);
+	if ((finfo = fopen("../static/HELP.txt", "re")) == NULL){
+		(void)fprintf(stderr, "%sERROR:%s Failed to open HELP file", INIT_RED, END_COLOR);
 		exit(EXIT_FAILURE);
 	}
 
@@ -31,7 +31,7 @@ void print_help(void){
 		printf("%c", read_c);
 	}
 
-	(void) fclose(finfo);
+	(void)fclose(finfo);
 
 	exit(EXIT_SUCCESS);
 }
