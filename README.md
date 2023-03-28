@@ -1,6 +1,6 @@
 # cForge
 
-cForge is a lightweight library for building scalable and efficient C applications. It should like the Rust cargo.
+cForge is a lightweight library for building scalable and efficient C applications. It should work like the Rust cargo.
 
 ## Building
 
