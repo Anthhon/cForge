@@ -1,1 +1,0 @@
-/usr/bin/cc CMakeFiles/cforge.dir/src/main.c.o -o cforge 
