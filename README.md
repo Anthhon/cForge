@@ -12,7 +12,7 @@ or
 git clone git@github.com:Anthhon/cForge.git
 mkdir build
 cd build
-cmake ..
+cmake .. && make
 ```
 
 ## Roadmap
