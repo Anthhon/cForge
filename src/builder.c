@@ -4,17 +4,17 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 
-#define BUFFER 1024 
-#define TERMINATOR 1
 #define PERMISSION_TO_MODIFY 0777
-#define TRUE 1
+#define TERMINATOR 1
+#define BUFFER 1024 
 #define FALSE 0
+#define TRUE 1
 
 /* TODO: header file not working
  * #define "console_colors.h" */
-#define INIT_RED "\033[0;31m"
-#define INIT_GREEN "\033[0;32m"
-#define END_COLOR "\033[0m"
+#define INIT_RED "\e[0;31m"
+#define INIT_GREEN "\e[0;32m"
+#define END_COLOR "\e[0m"
 
 typedef enum FileType {
 	FILE_CMAKE,
@@ -23,10 +23,38 @@ typedef enum FileType {
 	FILE_TESTS
 } File;
 
-void file_make(File file_type, const char *DESTINATION_PATH){
-	static const char *STATICS_PATH = "../static";
-	static const char *TESTS_PATH = "tests";
-	static const char *SRC_PATH = "src";
+void git_initialize(const char *PROJECT_NAME)
+{
+	char *command = malloc(sizeof(*command) * BUFFER);
+	int command_status = 0;
+
+	// Check if shell console is available	
+	(void)fprintf(stdout, "%scforge:%s checking if shell session is available\n", INIT_GREEN, END_COLOR);
+	if (system(NULL))
+		(void)fprintf(stdout, "%scforge:%s shell session found\n", INIT_GREEN, END_COLOR);
+	else
+		(void)fprintf(stdout, "%scforge:%s shell session not found\n", INIT_RED, END_COLOR);
+	
+	// Build command
+	(void)memset(command, 0, sizeof(command));
+	(void)sprintf(command, "git init ./%s/", PROJECT_NAME);
+
+	// Run gitinit
+	(void)fprintf(stdout, "%scforge:%s Initializing git project at ./%s/\n", INIT_GREEN, END_COLOR, PROJECT_NAME);
+	command_status = system(command);	
+	if (command_status == -1 || command_status == 127){
+		(void)fprintf(stdout, "%scforge:%s Some error occurred during the shell execution\n", INIT_RED, END_COLOR);
+		(void)fprintf(stdout, "%scforge:%s This is the error status %i\n", INIT_RED, END_COLOR, command_status);
+	}
+}
+
+void file_make(File file_type, const char *DESTINATION_PATH)
+{
+	// Folders
+	const char *STATICS_PATH = "../static";
+	const char *TESTS_PATH = "tests";
+	const char *SRC_PATH = "src";
+	// Files
 	const char *FILE_CMAKE_NAME = "CMakeLists.txt";
 	const char *FILE_README_NAME = "README.md";
 	const char *FILE_MAIN_NAME = "main.c";
@@ -38,8 +66,12 @@ void file_make(File file_type, const char *DESTINATION_PATH){
 	char *destination_file_path = malloc(sizeof(*destination_file_path) * BUFFER);
 	char text_buffer[BUFFER];
 	size_t read_size = 0;
+	
+	(void)memset(source_file_path, 0, sizeof(source_file_path));
+	(void)memset(destination_file_path, 0, sizeof(destination_file_path));
+	(void)memset(text_buffer, 0, sizeof(text_buffer));
 
-	/* Builds the path to the source and destination files */
+	// Builds the path to the source and destination files
 	switch(file_type){
 		case FILE_CMAKE:
 			(void)sprintf(source_file_path, "%s/%s", STATICS_PATH, FILE_CMAKE_NAME);
@@ -63,45 +95,46 @@ void file_make(File file_type, const char *DESTINATION_PATH){
 			break;
 	}
 
-	/* Open source file for reading */
-	(void)fprintf(stderr, "%scforge:%s building %s file\n", INIT_GREEN, END_COLOR, destination_file_path);
+	// Open file for reading
+	(void)fprintf(stderr, "%scforge:%s reading template %s file\n", INIT_GREEN, END_COLOR, destination_file_path);
 	if ((source_file = fopen(source_file_path, "rbe")) == NULL){
 		(void)fprintf(stderr, "%sERROR:%s Failed to read %s file\n", INIT_RED, END_COLOR, source_file_path);
 		exit(EXIT_FAILURE);
 	}
 
-	/* Open destination file for writing */
+	// Open destination file for writing
 	if ((destination_file = fopen(destination_file_path, "wbe")) == NULL){
 		(void)fprintf(stderr, "%sERROR:%s Failed to create %s file\n", INIT_RED, END_COLOR, destination_file_path); 
 		exit(EXIT_FAILURE);
 	}
 
-	/* Copy the content of the source file to the destination file */
+	// Copy the content of the source file to the destination file
 	while ((read_size = fread(text_buffer, 1, sizeof(text_buffer), source_file)) > 0){
 		(void)fwrite(text_buffer, 1, read_size, destination_file);
 	}
 
-	/* Just a success message */
 	(void)fprintf(stderr, "%scforge:%s %s file created succesffully\n", INIT_GREEN, END_COLOR, destination_file_path);
 
-	/* Close source and destination files */
-	fclose(source_file);
-	fclose(destination_file);
+	// Close source and destination files
+	(void)fclose(source_file);
+	(void)fclose(destination_file);
 
-	/* Free memory used in file paths */
+	// Free memory used in file paths
 	if (source_file_path != NULL){
-		free(source_file_path);
+		(void)free(source_file_path);
 		source_file_path = NULL;
 	}
 
 	if (destination_file_path != NULL){
-		free(destination_file_path);
+		(void)free(destination_file_path);
 		destination_file_path = NULL;
 	}
 }
 
-void folder_make(const char *folder_path){
+void folder_make(const char *folder_path)
+{
 	int dir_status = 0;
+
 	printf("%scforge:%s creating %s folder\n", INIT_GREEN, END_COLOR, folder_path);
 	if ((dir_status = mkdir(folder_path, PERMISSION_TO_MODIFY)) == -1){
 		(void)fprintf(stderr, "%sERROR:%s was not possible to create %s directory\n", INIT_RED, END_COLOR, folder_path);
@@ -110,14 +143,19 @@ void folder_make(const char *folder_path){
 	printf("%scforge:%s %s folder created with success!\n", INIT_GREEN, END_COLOR, folder_path);
 }
 
-int proj_init(char *path_main[]){
+int proj_init(char *path_main[])
+{
 	char *path_src = malloc(sizeof(*path_src) * BUFFER);
 	char *path_build = malloc(sizeof(*path_build) * BUFFER);
-	char *path_CMakeLists = "CMakeLists.txt";
+	const char *path_CMakeLists = "CMakeLists.txt";
+
+	// Clean memory and populate it
+	(void)memset(path_src, 0, sizeof(path_src)); 
+	(void)memset(path_build, 0, sizeof(path_build)); 
 	(void)sprintf(path_src, "%s/src", *path_main);
 	(void)sprintf(path_build, "%s/build", *path_main);
 
-	/* Create default folders and files */
+	// Create default folders and files
 	folder_make(*path_main);
 	folder_make(path_src);
 	folder_make(path_build);
@@ -126,10 +164,12 @@ int proj_init(char *path_main[]){
 	file_make(FILE_README, *path_main);
 	file_make(FILE_MAIN, *path_main);
 	file_make(FILE_TESTS, *path_main);
+
+	git_initialize(*path_main);
 	
-	free(path_src);
+	(void)free(path_src);
 	path_src = NULL;
-	free(path_build);
+	(void)free(path_build);
 	path_build = NULL;
 	exit(EXIT_SUCCESS);
 }
