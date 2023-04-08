@@ -46,4 +46,4 @@ The project is structured as follows:
 - [ ] Implement code profiling
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](/blob/main/LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
