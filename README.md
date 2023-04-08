@@ -6,7 +6,7 @@ One common challenge when starting a new C project is the tedious process of cre
 
 ## Building
 
-```
+```bash
 git clone https://github.com/Anthhon/cForge.git
 or
 git clone git@github.com:Anthhon/cForge.git
@@ -17,12 +17,13 @@ cmake .. && make
 
 ## Roadmap
 
-- (OK) Create a boilerplate folder project folder
-- (OK) Create a boilerplate project basic files
-- (OK) Initiate git project
-- (Incoming) Implement arguments to change project definitions
-- Implement testing command
-- Implement build system
-- Implement flags for build system
-- Implement code formatting
-- Implement code profiling
+[X] Create a boilerplate folder project folder
+[X] Create a boilerplate project basic files
+[X] Initiate git project
+[X] Implement arguments to change project definitions
+[ ] Implement testing command
+[ ] Implement build system
+[ ] Implement flags for build system
+[ ] Implement code formatting
+[ ] Implement code profiling
+

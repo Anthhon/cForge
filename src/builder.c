@@ -4,24 +4,7 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 
-#define PERMISSION_TO_MODIFY 0777
-#define TERMINATOR 1
-#define BUFFER 1024 
-#define FALSE 0
-#define TRUE 1
-
-/* TODO: header file not working
- * #define "console_colors.h" */
-#define INIT_RED "\e[0;31m"
-#define INIT_GREEN "\e[0;32m"
-#define END_COLOR "\e[0m"
-
-typedef enum FileType {
-	FILE_CMAKE,
-	FILE_README,
-	FILE_MAIN,
-	FILE_TESTS
-} File;
+#include "common.c"
 
 void git_initialize(const char *PROJECT_NAME)
 {
@@ -48,45 +31,36 @@ void git_initialize(const char *PROJECT_NAME)
 	}
 }
 
-void file_make(File file_type, const char *DESTINATION_PATH)
+void file_make(FileType file_type, const char *DESTINATION_PATH)
 {
-	// Folders
-	const char *STATICS_PATH = "../static";
-	const char *TESTS_PATH = "tests";
-	const char *SRC_PATH = "src";
-	// Files
-	const char *FILE_CMAKE_NAME = "CMakeLists.txt";
-	const char *FILE_README_NAME = "README.md";
-	const char *FILE_MAIN_NAME = "main.c";
-	const char *FILE_TESTS_NAME = "tests.c";
-
+	// Files path buffer
 	FILE *source_file = NULL;
 	FILE *destination_file = NULL;
 	char *source_file_path = malloc(sizeof(*source_file_path) * BUFFER);
 	char *destination_file_path = malloc(sizeof(*destination_file_path) * BUFFER);
-	char text_buffer[BUFFER];
+	char file_text_buffer[BUFFER];
 	size_t read_size = 0;
 	
 	(void)memset(source_file_path, 0, sizeof(source_file_path));
 	(void)memset(destination_file_path, 0, sizeof(destination_file_path));
-	(void)memset(text_buffer, 0, sizeof(text_buffer));
+	(void)memset(file_text_buffer, 0, sizeof(file_text_buffer));
 
 	// Builds the path to the source and destination files
 	switch(file_type){
 		case FILE_CMAKE:
-			(void)sprintf(source_file_path, "%s/%s", STATICS_PATH, FILE_CMAKE_NAME);
+			(void)sprintf(source_file_path, "%s/%s", STATIC_PATH, FILE_CMAKE_NAME);
 			(void)sprintf(destination_file_path, "./%s/%s", DESTINATION_PATH, FILE_CMAKE_NAME);
 			break;
 		case FILE_README:
-			(void)sprintf(source_file_path, "%s/%s", STATICS_PATH, FILE_README_NAME);
+			(void)sprintf(source_file_path, "%s/%s", STATIC_PATH, FILE_README_NAME);
 			(void)sprintf(destination_file_path, "./%s/%s", DESTINATION_PATH, FILE_README_NAME);
 			break;
 		case FILE_MAIN:
-			(void)sprintf(source_file_path, "%s/%s", STATICS_PATH, FILE_MAIN_NAME);
+			(void)sprintf(source_file_path, "%s/%s", STATIC_PATH, FILE_MAIN_NAME);
 			(void)sprintf(destination_file_path, "./%s/%s/%s", DESTINATION_PATH, SRC_PATH, FILE_MAIN_NAME);
 			break;
 		case FILE_TESTS:
-			(void)sprintf(source_file_path, "%s/%s", STATICS_PATH, FILE_TESTS_NAME);
+			(void)sprintf(source_file_path, "%s/%s", STATIC_PATH, FILE_TESTS_NAME);
 			(void)sprintf(destination_file_path, "./%s/%s/%s", DESTINATION_PATH, SRC_PATH, FILE_TESTS_NAME);
 			break;
 		default:
@@ -109,8 +83,8 @@ void file_make(File file_type, const char *DESTINATION_PATH)
 	}
 
 	// Copy the content of the source file to the destination file
-	while ((read_size = fread(text_buffer, 1, sizeof(text_buffer), source_file)) > 0){
-		(void)fwrite(text_buffer, 1, read_size, destination_file);
+	while ((read_size = fread(file_text_buffer, 1, sizeof(file_text_buffer), source_file)) > 0){
+		(void)fwrite(file_text_buffer, 1, read_size, destination_file);
 	}
 
 	(void)fprintf(stderr, "%scforge:%s %s file created succesffully\n", INIT_GREEN, END_COLOR, destination_file_path);
@@ -147,7 +121,6 @@ int proj_init(char *path_main[])
 {
 	char *path_src = malloc(sizeof(*path_src) * BUFFER);
 	char *path_build = malloc(sizeof(*path_build) * BUFFER);
-	const char *path_CMakeLists = "CMakeLists.txt";
 
 	// Clean memory and populate it
 	(void)memset(path_src, 0, sizeof(path_src)); 
@@ -155,21 +128,30 @@ int proj_init(char *path_main[])
 	(void)sprintf(path_src, "%s/src", *path_main);
 	(void)sprintf(path_build, "%s/build", *path_main);
 
-	// Create default folders and files
+	// Create default folders
 	folder_make(*path_main);
 	folder_make(path_src);
 	folder_make(path_build);
 
-	file_make(FILE_CMAKE, *path_main);
+	// Create default files
 	file_make(FILE_README, *path_main);
 	file_make(FILE_MAIN, *path_main);
-	file_make(FILE_TESTS, *path_main);
+	if (config.make_test_file)
+		file_make(FILE_TESTS, *path_main);
+	if (config.make_cmake_file)
+		file_make(FILE_CMAKE, *path_main);
 
-	git_initialize(*path_main);
-	
-	(void)free(path_src);
-	path_src = NULL;
-	(void)free(path_build);
-	path_build = NULL;
+	// Initialize git project
+	if (config.initialize_git)
+		git_initialize(*path_main);
+
+	if (path_src != NULL){
+		(void)free(path_src);
+		path_src = NULL;
+	}
+	if (path_build != NULL){
+		(void)free(path_build);
+		path_build = NULL;
+	}
 	exit(EXIT_SUCCESS);
 }

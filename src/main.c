@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "builder.c"
 
 /* TODO: header file not working
@@ -19,8 +20,6 @@ void print_usage(char *argv[])
 
 void print_help(void)
 {
-	// The help message itself isn't contained here
-	// you can find it in the HELP.txt file in the main folder
 	FILE *fstream = NULL;
 	int read_c = 0;
 
@@ -38,8 +37,23 @@ void print_help(void)
 	exit(EXIT_SUCCESS);
 }
 
+void check_arguments(char **arguments, size_t arg_counter){
+	// This function should search for special arguments
+	for (int i = 1; i < arg_counter; ++i){
+		if ((strcmp(arguments[i], "--no-cmake") == 0))
+			config.make_cmake_file = FALSE;
+		if ((strcmp(arguments[i], "--no-test") == 0))
+			config.make_test_file = FALSE;
+		if ((strcmp(arguments[i], "--no-git-init") == 0))
+			config.initialize_git= FALSE;
+	}
+}
+
 int main(int argc, char *argv[])
 {
+	char *first_arg = &argv[1][0];
+	char *proj_name = &argv[2][0];
+
 	if (argc <= 1){
 		print_usage(&argv[0]);
 		exit(EXIT_SUCCESS);
@@ -53,18 +67,20 @@ int main(int argc, char *argv[])
 			exit(EXIT_SUCCESS);
 		}
 	}
-	if (argc == 3){
+	if (argc >= 3){
 		char *first_arg = &argv[1][0];
 		char *proj_name = &argv[2][0];
 		if ((strcmp(first_arg, "--new") == 0) ||
 		    (strcmp(first_arg, "-n") == 0)    ||
 		    (strcmp(first_arg, "new") == 0)){
+			proj_config_create();
+			check_arguments(&argv[0], argc);
 			proj_init(&proj_name);
 			exit(EXIT_SUCCESS);
 		}
 	}
 	// Prints usage message in any of these cases
-	else{ print_usage(&argv[0]); }
+	else print_usage(&argv[0]);
 
 	exit(EXIT_SUCCESS);
 }
