@@ -17,13 +17,13 @@ cmake .. && make
 
 ## Roadmap
 
-[X] Create a boilerplate folder project folder
-[X] Create a boilerplate project basic files
-[X] Initiate git project
-[X] Implement arguments to change project definitions
-[ ] Implement testing command
-[ ] Implement build system
-[ ] Implement flags for build system
-[ ] Implement code formatting
-[ ] Implement code profiling
+- [X] Create a boilerplate folder project folder
+- [X] Create a boilerplate project basic files
+- [X] Initiate git project
+- [X] Implement arguments to change project definitions
+- [ ] Implement testing command
+- [ ] Implement build system
+- [ ] Implement flags for build system
+- [ ] Implement code formatting
+- [ ] Implement code profiling
 
