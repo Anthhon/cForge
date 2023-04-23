@@ -29,9 +29,6 @@ The project is structured as follows:
     -   `builder.c`: Implementation of the build system
     -   `common.c`: Implementation of common functions and values
     -   `main.c`: Entry point for the program and argument parser
--   `include/`: Header file directory
-    -   `builder.h`: Header file for the build system
-    -   `common.h`: Header file for common functions
 -   `Makefile`: Makefile for building the project
 
 ## Roadmap
