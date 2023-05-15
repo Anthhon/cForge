@@ -4,19 +4,29 @@ Description:
 cargoc is a package manager and build tool for C applications, designed to simplify dependency management, build automation, and package publishing.
 
 Options:
-    -h, --help              Show this help message and exit.
     --no-cmake              Disables the creation of a CMake file.
     --no-test               Disables the creation of a test file.
     --no-git-init           Disables the automatic initialization of a Git repository.
     
 Commands:
-    <new> <proj-name>      Starts a new boilerplate project in C.
+    <new> <proj-name>       Starts a new boilerplate project in C.
     	--new <proj-name>
-	-n <proj-name>
+		-n <proj-name>
+		n <proj-name>
     <build>                 Build the entire project.
+		--build <proj-name>
+		-b <proj-name>
+		b <proj-name>
     <run>                   Run main project file.
+		--run
+		-r
+		r
+	<help>
+		--help
+		-h
+		h
 
 Usage examples:
     cforge --no-cmake --no-test --no-git-init <new> <proj-name>
-    cforge <build>
-    cforge <run>
+    cforge build
+    cforge run

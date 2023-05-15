@@ -8,6 +8,15 @@
 #define INIT_RED "\e[0;31m"
 #define END_COLOR "\e[0m"
 
+#define FILE_CMAKE_NAME "CMakeLists.txt"
+#define FILE_README_NAME "README.md"
+#define FILE_TESTS_NAME "tests.c"
+#define FILE_MAIN_NAME "main.c"
+
+#define STATIC_PATH "../static"
+#define TESTS_PATH "tests"
+#define SRC_PATH "src"
+
 // Project definitions
 typedef struct {
 	int initialize_git;
@@ -22,7 +31,6 @@ typedef enum {
 	CMAKE,
 } ProjDefinition;
 
-// File types 
 typedef enum {
 	FILE_CMAKE,
 	FILE_README,
@@ -30,18 +38,16 @@ typedef enum {
 	FILE_TESTS
 } FileType;
 
-// Files names
-const char *FILE_CMAKE_NAME = "CMakeLists.txt";
-const char *FILE_README_NAME = "README.md";
-const char *FILE_TESTS_NAME = "tests.c";
-const char *FILE_MAIN_NAME = "main.c";
+void fatal(char *message){
+		(void)fprintf(stderr, "%sERROR:%s %s\n", INIT_RED, END_COLOR, message);
+		exit(EXIT_FAILURE);
+}
 
-// Folders names 
-const char *STATIC_PATH = "../static";
-const char *TESTS_PATH = "tests";
-const char *SRC_PATH = "src";
+void pmess(char *message){
+		(void)fprintf(stdout, "%scforge:%s %s\n", INIT_GREEN, END_COLOR, message);
+}
 
-void proj_config_create(void){
+void proj_config_initialize(void){
 	// Declare and define configuration properties
 	config.initialize_git = TRUE;
 	config.make_test_file = TRUE;
@@ -67,7 +73,6 @@ void proj_config_disable(ProjDefinition proj_definition){
 	case CMAKE:
 		config.make_cmake_file= FALSE;
 	default:
-		(void)fprintf(stderr, "ERROR: Somehow you passed an impossible parameter");
-		exit(EXIT_FAILURE);
+		fatal("Somehow you passed an impossible parameter");
 	}
 }

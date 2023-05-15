@@ -23,10 +23,8 @@ void print_help(void)
 	FILE *fstream = NULL;
 	int read_c = 0;
 
-	if ((fstream = fopen("../static/HELP.txt", "re")) == NULL){
-		(void)fprintf(stderr, "%sERROR:%s Failed to open HELP file", INIT_RED, END_COLOR);
-		exit(EXIT_FAILURE);
-	}
+	if ((fstream = fopen("../static/HELP.txt", "re")) == NULL)
+			fatal("Failed to open HELP file");
 
 	while ((read_c = fgetc(fstream)) != EOF){
 		printf("%c", read_c);
@@ -37,8 +35,7 @@ void print_help(void)
 	exit(EXIT_SUCCESS);
 }
 
-void check_arguments(char **arguments, size_t arg_counter){
-	// This function should search for special arguments
+void flags_check(char **arguments, size_t arg_counter){
 	for (int i = 1; i < arg_counter; ++i){
 		if ((strcmp(arguments[i], "--no-cmake") == 0))
 			config.make_cmake_file = FALSE;
@@ -47,6 +44,28 @@ void check_arguments(char **arguments, size_t arg_counter){
 		if ((strcmp(arguments[i], "--no-git-init") == 0))
 			config.initialize_git= FALSE;
 	}
+}
+
+// This should abstract the arguments checking like:
+// substr -> "help"
+// d_dash -> "--help"
+// s_dash -> "-h"
+int argument_check(char *argument, char *substr){
+		char double_dash[BUFFER];
+		char single_dash[BUFFER];
+		char single_letter[BUFFER];
+
+		sprintf(double_dash, "--%s", substr);
+		sprintf(single_dash, "-%c", substr[0]);
+		sprintf(single_letter, "%c", substr[0]);
+
+		if ((strcmp(argument, substr) == 0)      ||
+		    (strcmp(argument, double_dash) == 0) ||
+		    (strcmp(argument, single_dash) == 0) ||
+		    (strcmp(argument, single_letter) == 0)){
+				return 1; // Substring found
+		}
+		return 0; // Substring not found
 }
 
 int main(int argc, char *argv[])
@@ -60,22 +79,23 @@ int main(int argc, char *argv[])
 	}
 	if (argc == 2){
 		char *first_arg = &argv[1][0];
-		if ((strcmp(first_arg, "--help") == 0) ||
-		    (strcmp(first_arg, "-h") == 0) ||
-		    (strcmp(first_arg, "help") == 0)){
+		if (argument_check(first_arg, "help")){
 			print_help();
 			exit(EXIT_SUCCESS);
 		}
+		//if (argument_check(first_arg, "build")){
+		//	project_build();	
+		//	flags_check(&argv[0], argc);
+		//	exit(EXIT_SUCCESS);
+		//}
 	}
 	if (argc >= 3){
 		char *first_arg = &argv[1][0];
 		char *proj_name = &argv[2][0];
-		if ((strcmp(first_arg, "--new") == 0) ||
-		    (strcmp(first_arg, "-n") == 0)    ||
-		    (strcmp(first_arg, "new") == 0)){
-			proj_config_create();
-			check_arguments(&argv[0], argc);
-			proj_init(&proj_name);
+		if (argument_check(first_arg, "new")){
+			proj_config_initialize();
+			flags_check(&argv[0], argc);
+			proj_init(proj_name);
 			exit(EXIT_SUCCESS);
 		}
 	}
